@@ -1,0 +1,357 @@
+<!-- FORM: HEAD SECTION -->
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="referrer" content="no-referrer-when-downgrade">
+                        <style>
+                    .captcha {
+                        padding-bottom: 1em !important;
+                    }
+                    .wForm .captcha .oneField {
+                        margin: 0;
+                        padding: 0;
+                    }
+                </style>
+                <script type="text/javascript">
+                    // initialize our variables
+                    var captchaReady = 0;
+                    var wFORMSReady = 0;
+
+                    // when wForms is loaded call this
+                    var wformsReadyCallback = function () {
+                        // using this var to denote if wForms is loaded
+                        wFORMSReady = 1;
+                        // call our recaptcha function which is dependent on both
+                        // wForms and an async call to google
+                        // note the meat of this function wont fire until both
+                        // wFORMSReady = 1 and captchaReady = 1
+                        onloadCallback();
+                    }
+                    var gCaptchaReadyCallback = function() {
+                        // using this var to denote if captcha is loaded
+                        captchaReady = 1;
+                        // call our recaptcha function which is dependent on both
+                        // wForms and an async call to google
+                        // note the meat of this function wont fire until both
+                        // wFORMSReady = 1 and captchaReady = 1
+                        onloadCallback();
+                    };
+
+                    // add event listener to fire when wForms is fully loaded
+                    document.addEventListener("wFORMSLoaded", wformsReadyCallback);
+
+                    var enableSubmitButton = function() {
+                        var submitButton = document.getElementById('submit_button');
+                        var explanation = document.getElementById('disabled-explanation');
+                        if (submitButton != null) {
+                            submitButton.removeAttribute('disabled');
+                            if (explanation != null) {
+                                explanation.style.display = 'none';
+                            }
+                        }
+                    };
+                    var disableSubmitButton = function() {
+                        var submitButton = document.getElementById('submit_button');
+                        var explanation = document.getElementById('disabled-explanation');
+                        if (submitButton != null) {
+                            submitButton.disabled = true;
+                            if (explanation != null) {
+                                explanation.style.display = 'block';
+                            }
+                        }
+                    };
+
+                    // call this on both captcha async complete and wforms fully
+                    // initialized since we can't be sure which will complete first
+                    // and we need both done for this to function just check that they are
+                    // done to fire the functionality
+                    var onloadCallback = function () {
+                        // if our captcha is ready (async call completed)
+                        // and wFORMS is completely loaded then we are ready to add
+                        // the captcha to the page
+                        if (captchaReady && wFORMSReady) {
+                                                            grecaptcha.enterprise.render('g-recaptcha-render-div', {
+                                                            'sitekey': '6LfMg_EaAAAAAMhDNLMlgqDChzmtYHlx1yU2y7GI',
+                                'theme': 'light',
+                                'size': 'normal',
+                                'callback': 'enableSubmitButton',
+                                'expired-callback': 'disableSubmitButton'
+                            })
+                            var oldRecaptchaCheck = parseInt('1');
+                            if (oldRecaptchaCheck === -1) {
+                                var standardCaptcha = document.getElementById("tfa_captcha_text");
+                                standardCaptcha = standardCaptcha.parentNode.parentNode.parentNode;
+                                standardCaptcha.parentNode.removeChild(standardCaptcha);
+                            }
+
+                            if (!wFORMS.instances['paging']) {
+                                document.getElementById("g-recaptcha-render-div").parentNode.parentNode.parentNode.style.display = "block";
+                                //document.getElementById("g-recaptcha-render-div").parentNode.parentNode.parentNode.removeAttribute("hidden");
+                            }
+                            document.getElementById("g-recaptcha-render-div").getAttributeNode('id').value = 'tfa_captcha_text';
+
+                            var captchaError = '';
+                            if (captchaError == '1') {
+                                var errMsgText = 'The CAPTCHA was not completed successfully.';
+                                var errMsgDiv = document.createElement('div');
+                                errMsgDiv.id = "tfa_captcha_text-E";
+                                errMsgDiv.className = "err errMsg";
+                                errMsgDiv.innerText = errMsgText;
+                                var loc = document.querySelector('.g-captcha-error');
+                                loc.insertBefore(errMsgDiv, loc.childNodes[0]);
+
+                                /* See wFORMS.behaviors.paging.applyTo for origin of this code */
+                                if (wFORMS.instances['paging']) {
+                                    var b = wFORMS.instances['paging'][0];
+                                    var pp = base2.DOM.Element.querySelector(document, wFORMS.behaviors.paging.CAPTCHA_ERROR);
+                                    if (pp) {
+                                        var lastPage = 1;
+                                        for (var i = 1; i < 100; i++) {
+                                            if (b.behavior.isLastPageIndex(i)) {
+                                                lastPage = i;
+                                                break;
+                                            }
+                                        }
+                                        b.jumpTo(lastPage);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                </script>
+                                                    <script src='https://www.google.com/recaptcha/enterprise.js?onload=gCaptchaReadyCallback&render=explicit&hl=en_GB' async
+                        defer></script>
+                                <script type="text/javascript">
+                    document.addEventListener("DOMContentLoaded", function() {
+                        var warning = document.getElementById("javascript-warning");
+                        if (warning != null) {
+                            warning.parentNode.removeChild(warning);
+                        }
+                        var oldRecaptchaCheck = parseInt('1');
+                        if (oldRecaptchaCheck !== -1) {
+                            var explanation = document.getElementById('disabled-explanation');
+                            var submitButton = document.getElementById('submit_button');
+                            if (submitButton != null) {
+                                submitButton.disabled = true;
+                                if (explanation != null) {
+                                    explanation.style.display = 'block';
+                                }
+                            }
+                        }
+                    });
+                </script>
+                <script type="text/javascript">
+        document.addEventListener("DOMContentLoaded", function(){
+            const FORM_TIME_START = Math.floor((new Date).getTime()/1000);
+            let formElement = document.getElementById("tfa_0");
+            if (null === formElement) {
+                formElement = document.getElementById("0");
+            }
+            let appendJsTimerElement = function(){
+                let formTimeDiff = Math.floor((new Date).getTime()/1000) - FORM_TIME_START;
+                let cumulatedTimeElement = document.getElementById("tfa_dbCumulatedTime");
+                if (null !== cumulatedTimeElement) {
+                    let cumulatedTime = parseInt(cumulatedTimeElement.value);
+                    if (null !== cumulatedTime && cumulatedTime > 0) {
+                        formTimeDiff += cumulatedTime;
+                    }
+                }
+                let jsTimeInput = document.createElement("input");
+                jsTimeInput.setAttribute("type", "hidden");
+                jsTimeInput.setAttribute("value", formTimeDiff.toString());
+                jsTimeInput.setAttribute("name", "tfa_dbElapsedJsTime");
+                jsTimeInput.setAttribute("id", "tfa_dbElapsedJsTime");
+                jsTimeInput.setAttribute("autocomplete", "off");
+                if (null !== formElement) {
+                    formElement.appendChild(jsTimeInput);
+                }
+            };
+            if (null !== formElement) {
+                if(formElement.addEventListener){
+                    formElement.addEventListener('submit', appendJsTimerElement, false);
+                } else if(formElement.attachEvent){
+                    formElement.attachEvent('onsubmit', appendJsTimerElement);
+                }
+            }
+        });
+    </script>
+
+    <link href="https://cleveraccounts.tfaforms.net/dist/form-builder/5.0.0/wforms-layout.css?v=feeb343b0c4ea9904d2f889bfe7de6f9e21db3d7" rel="stylesheet" type="text/css" />
+
+    <link href="https://cleveraccounts.tfaforms.net/uploads/themes/theme-26512.css" rel="stylesheet" type="text/css" />
+    <link href="https://cleveraccounts.tfaforms.net/dist/form-builder/5.0.0/wforms-jsonly.css?v=feeb343b0c4ea9904d2f889bfe7de6f9e21db3d7" rel="alternate stylesheet" title="This stylesheet activated by javascript" type="text/css" />
+    <script type="text/javascript" src="https://cleveraccounts.tfaforms.net/wForms/3.11/js/wforms.js?v=feeb343b0c4ea9904d2f889bfe7de6f9e21db3d7"></script>
+    <script type="text/javascript">
+        wFORMS.behaviors.prefill.skip = false;
+    </script>
+        <script type="text/javascript" src="https://cleveraccounts.tfaforms.net/wForms/3.11/js/localization-en_GB.js?v=feeb343b0c4ea9904d2f889bfe7de6f9e21db3d7"></script>
+
+
+
+<!-- FORM: BODY SECTION -->
+<div class="wFormContainer" >
+    <div class="wFormHeader"></div>
+    <style type="text/css">
+                #tfa_19-L,
+                label[id^="tfa_19["] {
+                    width: 628px !important;
+                    min-width: 0px;
+                }
+            
+                #tfa_FirstName,
+                *[id^="tfa_FirstName["] {
+                    width: 1180px !important;
+                }
+                #tfa_FirstName-D,
+                *[id^="tfa_FirstName["][class~="field-container-D"] {
+                    width: auto !important;
+                }
+            
+                #tfa_LastName,
+                *[id^="tfa_LastName["] {
+                    width: 1180px !important;
+                }
+                #tfa_LastName-D,
+                *[id^="tfa_LastName["][class~="field-container-D"] {
+                    width: auto !important;
+                }
+            
+                #tfa_Company,
+                *[id^="tfa_Company["] {
+                    width: 1180px !important;
+                }
+                #tfa_Company-D,
+                *[id^="tfa_Company["][class~="field-container-D"] {
+                    width: auto !important;
+                }
+            
+                #tfa_Phone,
+                *[id^="tfa_Phone["] {
+                    width: 1180px !important;
+                }
+                #tfa_Phone-D,
+                *[id^="tfa_Phone["][class~="field-container-D"] {
+                    width: auto !important;
+                }
+            
+                #tfa_Email,
+                *[id^="tfa_Email["] {
+                    width: 1180px !important;
+                }
+                #tfa_Email-D,
+                *[id^="tfa_Email["][class~="field-container-D"] {
+                    width: auto !important;
+                }
+            </style><div class=""><div class="wForm" id="330240-WRPR" dir="ltr">
+<div class="codesection" id="code-330240"><style>
+  .captchaHelp,.disabled-explanation {display:none !important}
+
+.oneChoice {
+  margin: 4px;
+}
+.oneChoice input[type="radio"] {
+  opacity: 0;
+  position: fixed;
+  width: 0;
+}
+
+
+.oneChoice label {
+    display: inline-block;
+    background-color: #007bc7;
+color:#ffffff !important;
+    border-color: #007bc7;
+      border-radius: 3px;
+  font-weight: 500;
+    padding: 4.8px 16px !important;
+    line-height: 1.7em!important;
+  background-size: cover;
+    background-position: 50%;
+    background-repeat: no-repeat;
+    border: 2px solid #007bc7;
+}
+
+.oneChoice label:hover {
+  background-color: #2ea3f2;
+      border: 2px solid #2ea3f2;
+  color:#ffffff !important;
+}
+
+.oneChoice input[type="radio"]:focus + label {
+    border: 2px solid #007bc7;
+}
+
+.oneChoice input[type="radio"]:checked + label {
+    display: inline-block;
+    background-color: #888;
+color:#ffffff !important;
+    border-color: #007bc7;
+      border-radius: 3px;
+  font-weight: 500;
+    padding: 4.8px 16px !important;
+    line-height: 1.7em!important;
+  background-size: cover;
+    background-position: 50%;
+    background-repeat: no-repeat;
+    border: 2px solid #888;
+
+}
+
+.wForm .postField {
+    margin: 0 5px 0 4px !important;
+}
+  
+  <STYLE></style></div>
+<form method="post" action="https://cleveraccounts.tfaforms.net/api_v2/workflow/processor" class="hintsTooltip labelsLeftAligned" id="330240" role="form">
+<div class="oneField field-container-D  labelsAbove  " id="tfa_19-D" role="radiogroup" aria-labelledby="tfa_19-L" data-tfa-labelledby="-L tfa_19-L">
+<label id="tfa_19-L" class="label preField "><h2 style="font-size: 19.696px; font-family: &quot;Source Sans Pro&quot;, Helvetica, Arial, Lucida, sans-serif; line-height: 1.2em;">Please tell us the service you would like to apply for?</h2></label><br><div class="inputWrapper"><span id="tfa_19" class="choices horizontal "><span class="oneChoice"><input type="radio" value="tfa_20" class="" id="tfa_20" name="tfa_19" data-conditionals="#tfa_25,#tfa_Company" aria-labelledby="tfa_20-L" data-tfa-labelledby="tfa_19-L tfa_20-L"><label class="label postField" id="tfa_20-L" for="tfa_20"><span class="input-radio-faux"></span>LIMITED COMPANY</label></span><span class="oneChoice"><input type="radio" value="tfa_21" class="" id="tfa_21" name="tfa_19" data-conditionals="#tfa_34,#tfa_Company" aria-labelledby="tfa_21-L" data-tfa-labelledby="tfa_19-L tfa_21-L"><label class="label postField" id="tfa_21-L" for="tfa_21"><span class="input-radio-faux"></span>SOLE TRADER / LANDLORD</label></span><span class="oneChoice"><input type="radio" value="tfa_22" class="" id="tfa_22" name="tfa_19" data-conditionals="#tfa_42" aria-labelledby="tfa_22-L" data-tfa-labelledby="tfa_19-L tfa_22-L"><label class="label postField" id="tfa_22-L" for="tfa_22"><span class="input-radio-faux"></span>I'M NOT SURE</label></span></span></div>
+</div>
+<div id="tfa_25" class="section group" data-condition="`#tfa_20`"><div class="htmlSection" id="tfa_24"><div class="htmlContent" id="tfa_24-HTML">
+<div style="background-color:rgba(116,153,191,0.12)!important; color: #454545; padding: 10px;line-height:1.5em;border:0px solid #ddd;">You are trading, or intend to trade as a <b>limited company</b>, please continue to complete the form.
+
+</div></div></div></div>
+<div id="tfa_34" class="section group" data-condition="`#tfa_21`"><div class="htmlSection" id="tfa_36"><div class="htmlContent" id="tfa_36-HTML">
+<div style="background-color:rgba(116,153,191,0.12)!important; color: #454545; padding: 10px;line-height:1.5em;border:0px solid #ddd;">You are trading, or intend to trade as a <b>sole trader</b>, please continue to complete the form.
+
+</div></div></div></div>
+<div id="tfa_42" class="section group" data-condition="`#tfa_22`"><div class="htmlSection" id="tfa_45"><div class="htmlContent" id="tfa_45-HTML">
+<div style="background-color:rgba(116,153,191,0.12)!important; color: #454545; padding: 10px;line-height:1.5em;border:0px solid #ddd;">You might not be sure how you intend to trade or just want to speak with someone for further help.
+
+</div></div></div></div>
+<div class="htmlSection" id="tfa_46"><div class="htmlContent" id="tfa_46-HTML"><h2 style="font-size: 18px;">Please complete some basic information first</h2></div></div>
+<div class="oneField field-container-D  labelsAbove  " id="tfa_FirstName-D">
+<label id="tfa_FirstName-L" class="label preField reqMark" for="tfa_FirstName">First Name</label><br><div class="inputWrapper"><input aria-required="true" type="text" id="tfa_FirstName" name="tfa_FirstName" value="" placeholder="Please enter your first name" title="First Name" class="required"></div>
+</div>
+<div class="oneField field-container-D  labelsAbove  " id="tfa_LastName-D">
+<label id="tfa_LastName-L" class="label preField reqMark" for="tfa_LastName">Last Name</label><br><div class="inputWrapper"><input aria-required="true" type="text" id="tfa_LastName" name="tfa_LastName" value="" placeholder="Please enter your surname" title="Last Name" class="required"></div>
+</div>
+<div class="oneField field-container-D  labelsAbove  " id="tfa_Company-D">
+<label id="tfa_Company-L" class="label preField reqMark" for="tfa_Company">Business Name</label><br><div class="inputWrapper"><input aria-required="true" type="text" id="tfa_Company" name="tfa_Company" value="" placeholder="Enter your business name or a name you would like to use" data-condition="`#tfa_20` OR `#tfa_21`" title="Business Name" class="required"></div>
+</div>
+<div class="oneField field-container-D  labelsAbove  " id="tfa_Phone-D">
+<label id="tfa_Phone-L" class="label preField reqMark" for="tfa_Phone">Phone Number</label><br><div class="inputWrapper"><input aria-required="true" type="text" id="tfa_Phone" name="tfa_Phone" value="" placeholder="Enter the best number to contact you on" title="Phone Number" class="required"></div>
+</div>
+<div class="oneField field-container-D  labelsAbove  " id="tfa_Email-D">
+<label id="tfa_Email-L" class="label preField reqMark" for="tfa_Email">Email Address</label><br><div class="inputWrapper"><input aria-required="true" type="text" id="tfa_Email" name="tfa_Email" value="" placeholder="Enter the best email address to contact you" title="Email Address" class="validate-email required"></div>
+</div>
+<input type="hidden" id="tfa_3" name="tfa_3" value="" class=""><input type="hidden" id="tfa_4" name="tfa_4" value="" class=""><input type="hidden" id="tfa_8" name="tfa_8" value="" class=""><input type="hidden" id="tfa_18" name="tfa_18" value="" class=""><input type="hidden" id="tfa_11" name="tfa_11" value="" class=""><input type="hidden" id="tfa_14" name="tfa_14" value="" class=""><input type="hidden" id="tfa_9" name="tfa_9" value="Limited Package" class=""><input type="hidden" id="tfa_15" name="tfa_15" value="" class=""><input type="hidden" id="tfa_16" name="tfa_16" value="" class=""><div class="actions" id="330240-A">
+<div id="google-captcha" style="display: none">
+<br><div class="captcha">
+<div class="oneField">
+<div class="g-recaptcha" id="g-recaptcha-render-div"></div>
+<div class="g-captcha-error"></div>
+<br>
+</div>
+<div class="captchaHelp">reCAPTCHA helps prevent automated form spam.<br>
+</div>
+<div id="disabled-explanation" class="captchaHelp" style="display: none">The submit button will be disabled until you complete the CAPTCHA.</div>
+</div>
+</div>
+<input type="submit" data-label="Continue" class="primaryAction" id="submit_button" value="Continue">
+</div>
+<div style="clear:both"></div>
+<input type="hidden" value="330240" name="tfa_dbFormId" id="tfa_dbFormId"><input type="hidden" value="" name="tfa_dbResponseId" id="tfa_dbResponseId"><input type="hidden" value="0ef8910e043204a1277140ed5d349daf" name="tfa_dbControl" id="tfa_dbControl"><input type="hidden" value="" name="tfa_dbWorkflowSessionUuid" id="tfa_dbWorkflowSessionUuid"><input type="hidden" value="44" name="tfa_dbVersionId" id="tfa_dbVersionId"><input type="hidden" value="" name="tfa_switchedoff" id="tfa_switchedoff">
+</form>
+</div></div><div class="wFormFooter"><p class="supportInfo"><br></p></div>
+  <p class="supportInfo" >
+      </p>
+ </div>
